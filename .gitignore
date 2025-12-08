@@ -1,0 +1,91 @@
+build/
+install/
+.venv/
+obj_dir/
+__pycache__/
+*.pyc
+*.so
+
+# Artifacts
+artifacts/real_world_sim_2025/
+artifacts/*.jsonl
+artifacts/*.hdf5
+artifacts/*.npy
+artifacts/*.meta.json
+
+# Python build artifacts
+dist/
+*.egg-info/
+.coverage
+coverage.xml
+*.whl
+*.tar.gz
+
+# Phase III generated artifacts (exclude runtime-generated data)
+evolve/logs/*.json
+evolve/policies/*.json
+evolve/precision_maps/*.json
+evolve/*_dashboard.json
+schedules/*.json
+quantum_search/*.json
+memgraph/*.json
+profiles/causal/*.json
+federated/aggregated/*.json
+certs/*_certificate.json
+
+# Test artifacts
+.pytest_cache/
+*.backup
+sbom.spdx.json
+
+# QCMG simulation outputs
+qcmg_evolution.png
+qcmg_results.json
+# CLI generated files
+plan.json
+
+# Package build artifacts
+*.egg-info/
+coverage.json
+
+# QuASIM-Own runtime directories
+runs/
+reports/
+.cache/quasim_datasets/
+
+# Video artifacts (auto-generated)
+artifacts/flows/*.mp4
+artifacts/flows/*.gif
+
+# Demo artifacts (auto-generated, keep structure)
+artifacts/aerospace/
+artifacts/telecom/
+artifacts/finance/
+artifacts/healthcare/
+artifacts/energy/
+artifacts/transportation/
+artifacts/manufacturing/
+artifacts/agritech/
+
+# SpaceX/NASA Pilot demo outputs (runtime-generated)
+*_demo_report.json
+
+*_demo_report.json
+# Enhancement orchestrator logs
+logs/copilot-enhancement/
+docs/artifacts/
+
+
+# QuNimbus autonomous rollout artifacts (transient)
+logs/global_rollout.log
+pilots/infinite/active/*.json
+pilots/infinite/archive/*.json
+
+# Verification tool test artifacts
+artifacts/verify/
+artifacts/benchmarks/
+artifacts/metrics/
+artifacts/compression/
+artifacts/econ/
+data/telemetry/
+docs/compliance/DO178C/
