@@ -9,8 +9,6 @@ Contains 15 natural rubber variants with complete specifications:
 
 from __future__ import annotations
 
-from dataclasses import dataclass, field
-
 import numpy as np
 
 from goodyear_quantum_pilot.materials.base import (
@@ -19,7 +17,6 @@ from goodyear_quantum_pilot.materials.base import (
     HamiltonianParameters,
     Material,
     MaterialCategory,
-    MaterialProperty,
     MechanicalBehavior,
     MolecularSpecification,
     PropertyType,
@@ -39,7 +36,7 @@ def create_natural_rubber(
     pri: float = 60.0,  # Plasticity Retention Index
 ) -> Material:
     """Create a natural rubber material.
-    
+
     Args:
         variant: Rubber variant (SMR, SVR, TSR, etc.)
         grade: Quality grade (CV, L, 5, 10, 20, etc.)
@@ -49,7 +46,7 @@ def create_natural_rubber(
         volatile_matter: Volatile matter (% max)
         plasticity: Initial Wallace plasticity (P0)
         pri: Plasticity Retention Index
-        
+
     Returns:
         Configured natural rubber material
     """
@@ -59,7 +56,7 @@ def create_natural_rubber(
         category=MaterialCategory.NATURAL_RUBBER,
         description=f"{variant} grade {grade} natural rubber (Hevea brasiliensis)",
     )
-    
+
     # Molecular specification - cis-1,4-polyisoprene
     material.molecular = MolecularSpecification(
         formula="(C5H8)n",
@@ -72,7 +69,7 @@ def create_natural_rubber(
         num_electrons=40,  # Per monomer
         point_group="C2v",
     )
-    
+
     # Quantum Hamiltonian
     num_orb = 10
     material.hamiltonian = HamiltonianParameters(
@@ -84,11 +81,11 @@ def create_natural_rubber(
         basis_set="cc-pVDZ",
         spin_multiplicity=1,
     )
-    
+
     # Mechanical behavior - excellent for NR
     # Quality affects properties
     quality_factor = 1.0 + 0.01 * pri - 0.5 * dirt_content
-    
+
     material.mechanical = MechanicalBehavior(
         model_type="mooney_rivlin",
         c10=0.35 * quality_factor,
@@ -99,7 +96,7 @@ def create_natural_rubber(
         relaxation_time=0.05,
         strain_rate_sensitivity=0.08,
     )
-    
+
     # Thermal behavior
     material.thermal = ThermalBehavior(
         glass_transition=200.0,  # -73°C, very flexible
@@ -110,7 +107,7 @@ def create_natural_rubber(
         thermal_expansion=2.2e-4,
         heat_buildup_rate=0.008,  # Lower than SBR
     )
-    
+
     # Wear model - excellent for NR
     material.wear = WearModel(
         abrasion_index=120.0 * quality_factor,
@@ -121,7 +118,7 @@ def create_natural_rubber(
         endurance_limit=60.0,  # Higher than SBR
         tearing_energy=40.0,  # Excellent tear
     )
-    
+
     # Environmental reactivity - NR is less resistant
     material.environmental = EnvironmentalReactivity(
         ozone_resistance=30.0,  # Poor ozone resistance
@@ -130,7 +127,7 @@ def create_natural_rubber(
         oxidation_activation=70.0,
         oxidation_rate=2e-5,
     )
-    
+
     # Economic factors
     # Price varies with grade
     base_cost = 1.80  # USD/kg
@@ -138,7 +135,7 @@ def create_natural_rubber(
         base_cost = 2.20
     elif "5" in grade:
         base_cost = 1.90
-    
+
     material.economic = EconomicFactors(
         raw_material_cost=base_cost,
         processing_cost=1.20,
@@ -148,10 +145,15 @@ def create_natural_rubber(
         recyclability=20.0,
         carbon_footprint=1.5,  # Lower carbon footprint
     )
-    
+
     # Properties
-    material.set_property(PropertyType.TENSILE_STRENGTH, 25.0 * quality_factor, "MPa",
-                          source="experimental", quantum_enhanced=False)
+    material.set_property(
+        PropertyType.TENSILE_STRENGTH,
+        25.0 * quality_factor,
+        "MPa",
+        source="experimental",
+        quantum_enhanced=False,
+    )
     material.set_property(PropertyType.ELONGATION, 650.0, "%")
     material.set_property(PropertyType.HARDNESS, 45.0, "Shore A")
     material.set_property(PropertyType.RESILIENCE, 75.0, "%")  # Excellent
@@ -160,11 +162,11 @@ def create_natural_rubber(
     material.set_property(PropertyType.ABRASION_RESISTANCE, 120.0, "index")
     material.set_property(PropertyType.GLASS_TRANSITION, 200.0, "K")
     material.set_property(PropertyType.FATIGUE_LIFE, 5e6, "cycles")
-    
+
     # Store grade info
     material.description += f"\nDirt: {dirt_content}%, Ash: {ash_content}%, N: {nitrogen_content}%"
     material.description += f"\nP0: {plasticity}, PRI: {pri}"
-    
+
     return material
 
 
@@ -175,7 +177,7 @@ RUBBER_CATALOG: dict[str, Material] = {}
 # SMR (Standard Malaysian Rubber) grades
 _smr_configs = [
     ("SMR", "CV60", 0.03, 0.5, 0.6, 0.8, 60, 60),  # Constant Viscosity
-    ("SMR", "L", 0.03, 0.5, 0.6, 0.8, 30, 60),      # Light colored
+    ("SMR", "L", 0.03, 0.5, 0.6, 0.8, 30, 60),  # Light colored
     ("SMR", "5", 0.05, 0.6, 0.6, 0.8, 30, 60),
     ("SMR", "10", 0.10, 0.75, 0.6, 0.8, 30, 50),
     ("SMR", "20", 0.20, 1.0, 0.6, 0.8, 30, 40),
@@ -208,6 +210,7 @@ for variant, grade, dirt, ash, n, vol, p0, pri in _tsr_configs:
     key = f"{variant}-{grade}"
     RUBBER_CATALOG[key] = create_natural_rubber(variant, grade, dirt, ash, n, vol, p0, pri)
 
+
 # Specialty Natural Rubbers
 # Epoxidized Natural Rubber (ENR)
 def create_enr_material(epoxidation: float) -> Material:
@@ -216,18 +219,19 @@ def create_enr_material(epoxidation: float) -> Material:
     material.material_id = f"ENR-{int(epoxidation)}"
     material.name = f"Epoxidized Natural Rubber {int(epoxidation)}%"
     material.description = f"Natural rubber with {epoxidation}% epoxidation"
-    
+
     # ENR has improved oil resistance and lower Tg
     material.thermal.glass_transition = 200.0 + 1.0 * epoxidation
-    
+
     # Better wet grip
     material.set_property(PropertyType.OIL_RESISTANCE, 30 + epoxidation, "index")
-    
+
     return material
 
 
 RUBBER_CATALOG["ENR-25"] = create_enr_material(25.0)
 RUBBER_CATALOG["ENR-50"] = create_enr_material(50.0)
+
 
 # Deproteinized Natural Rubber (DPNR)
 def create_dpnr_material() -> Material:
@@ -236,10 +240,10 @@ def create_dpnr_material() -> Material:
     material.material_id = "DPNR"
     material.name = "Deproteinized Natural Rubber"
     material.description = "High purity NR with reduced protein allergens"
-    
+
     # Lower nitrogen = reduced protein
     material.set_property(PropertyType.TENSILE_STRENGTH, 22.0, "MPa")  # Slightly lower
-    
+
     return material
 
 
@@ -253,10 +257,10 @@ TSR = RUBBER_CATALOG["TSR-10"]
 
 class NaturalRubber(Material):
     """Class representing natural rubber materials.
-    
+
     Provides additional methods specific to natural rubber processing.
     """
-    
+
     def __init__(self, variant: str = "SMR", grade: str = "CV60") -> None:
         """Initialize from catalog or create new."""
         key = f"{variant}-{grade}"
@@ -283,34 +287,34 @@ class NaturalRubber(Material):
                 name=base.name,
                 category=base.category,
             )
-    
+
     def estimate_mastication_time(self, target_mooney: float) -> float:
         """Estimate mastication time to reach target Mooney viscosity.
-        
+
         Args:
             target_mooney: Target Mooney viscosity (ML 1+4 at 100°C)
-            
+
         Returns:
             Estimated mastication time (minutes)
         """
         # Simplified model: t = k * ln(ML0/MLt)
         initial_mooney = 80.0  # Typical for raw NR
         k = 2.5  # Rate constant
-        
+
         if target_mooney >= initial_mooney:
             return 0.0
-        
+
         return k * np.log(initial_mooney / target_mooney)
-    
+
     def get_cure_characteristics(
         self,
         temperature: float = 433.0,  # 160°C
     ) -> dict[str, float]:
         """Get vulcanization cure characteristics.
-        
+
         Args:
             temperature: Cure temperature (K)
-            
+
         Returns:
             Dictionary with cure parameters
         """
@@ -318,50 +322,50 @@ class NaturalRubber(Material):
         # Activation energy for sulfur cure
         Ea = 80.0  # kJ/mol
         R = 8.314e-3  # kJ/mol·K
-        
+
         # Reference cure at 150°C (423 K)
         t90_ref = 8.0  # minutes
-        
+
         # Arrhenius temperature correction
-        factor = np.exp(Ea / R * (1/423 - 1/temperature))
+        factor = np.exp(Ea / R * (1 / 423 - 1 / temperature))
         t90 = t90_ref * factor
-        
+
         return {
             "ts2": t90 * 0.15,  # Scorch time
-            "t50": t90 * 0.5,   # 50% cure
-            "t90": t90,         # 90% cure
-            "mh": 45.0,         # Maximum torque (dNm)
-            "ml": 5.0,          # Minimum torque (dNm)
+            "t50": t90 * 0.5,  # 50% cure
+            "t90": t90,  # 90% cure
+            "mh": 45.0,  # Maximum torque (dNm)
+            "ml": 5.0,  # Minimum torque (dNm)
             "delta_torque": 40.0,
         }
-    
+
     def predict_strain_crystallization(
         self,
         strain: float,
         temperature: float = 298.0,
     ) -> float:
         """Predict strain-induced crystallization.
-        
+
         Natural rubber undergoes strain crystallization which
         provides self-reinforcement at high strains.
-        
+
         Args:
             strain: Engineering strain
             temperature: Temperature (K)
-            
+
         Returns:
             Crystallinity fraction (0-1)
         """
         if strain < 2.0:  # Below critical strain
             return 0.0
-        
+
         # Temperature effect
         if temperature > 303:  # Above crystallization temperature
             temp_factor = max(0, 1 - (temperature - 303) / 30)
         else:
             temp_factor = 1.0
-        
+
         # Strain crystallization onset ~200% strain
         crystallinity = min(0.3, 0.1 * (strain - 2.0)) * temp_factor
-        
+
         return crystallinity
