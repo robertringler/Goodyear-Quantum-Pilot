@@ -85,9 +85,11 @@ print(f"Total materials: {len(all_materials)}")  # 90+
 Retrieve a specific material by its unique identifier.
 
 **Parameters:**
+
 - `material_id` (str): Unique material identifier
 
 **Returns:**
+
 - `Material` or `None` if not found
 
 ```python
@@ -101,9 +103,11 @@ if material:
 Retrieve a material by its name.
 
 **Parameters:**
+
 - `name` (str): Material name (case-insensitive)
 
 **Returns:**
+
 - `Material` or `None` if not found
 
 ```python
@@ -115,9 +119,11 @@ sbr = MaterialsDatabase.get_by_name("styrene_butadiene_rubber")
 Get all materials in a specific category.
 
 **Parameters:**
+
 - `category` (MaterialCategory): Category enum value
 
 **Returns:**
+
 - List of materials in that category
 
 ```python
@@ -132,9 +138,11 @@ print(f"Found {len(elastomers)} elastomers")
 Full-text search across material properties.
 
 **Parameters:**
+
 - `query` (str): Search query string
 
 **Returns:**
+
 - List of matching materials
 
 ```python
@@ -146,9 +154,11 @@ silica_materials = MaterialsDatabase.search("silica")
 Advanced query with property filters.
 
 **Parameters:**
+
 - `**criteria`: Keyword arguments for filtering
 
 **Returns:**
+
 - List of matching materials
 
 ```python
@@ -280,9 +290,11 @@ def __init__(
 Compute the ground state energy of a molecular system.
 
 **Parameters:**
+
 - `hamiltonian` (Hamiltonian): Molecular Hamiltonian
 
 **Returns:**
+
 - `VQEResult` containing energy and optimal parameters
 
 ```python
@@ -299,10 +311,12 @@ print(f"Iterations: {result.iterations}")
 Compute multiple excited states using VQE-based methods.
 
 **Parameters:**
+
 - `hamiltonian` (Hamiltonian): Molecular Hamiltonian
 - `n_states` (int): Number of excited states to compute
 
 **Returns:**
+
 - List of `VQEResult` for each state
 
 ```python
@@ -316,9 +330,11 @@ for i, state in enumerate(states):
 Compute molecular properties from converged wavefunction.
 
 **Parameters:**
+
 - `wavefunction` (Wavefunction): Converged VQE wavefunction
 
 **Returns:**
+
 - Dictionary of computed properties
 
 ```python
@@ -373,9 +389,11 @@ def __init__(
 Optimize a tire compound formulation.
 
 **Parameters:**
+
 - `problem` (FormulationProblem): Optimization problem specification
 
 **Returns:**
+
 - `QAOAResult` with optimal formulation
 
 ```python
@@ -402,10 +420,12 @@ print(f"Predicted properties: {result.predicted_properties}")
 Solve a general QUBO problem.
 
 **Parameters:**
+
 - `Q` (np.ndarray): QUBO matrix
 - `offset` (float): Constant offset
 
 **Returns:**
+
 - `QAOAResult` with solution
 
 ```python
@@ -464,9 +484,11 @@ def __init__(
 Compute ground state energy using QMC.
 
 **Parameters:**
+
 - `trial_wf` (TrialWavefunction): Trial wavefunction
 
 **Returns:**
+
 - `QMCResult` with energy and error estimates
 
 ```python
@@ -482,9 +504,11 @@ print(f"Variance: {result.variance:.6f}")
 Sample polymer configurations from the QMC distribution.
 
 **Parameters:**
+
 - `n_samples` (int): Number of configurations to sample
 
 **Returns:**
+
 - List of sampled configurations
 
 ```python
@@ -517,9 +541,11 @@ class TunnelingCalculator:
 Calculate tunneling rate through a potential barrier.
 
 **Parameters:**
+
 - `barrier` (PotentialBarrier): Barrier specification
 
 **Returns:**
+
 - `TunnelingResult` with rate and transmission coefficient
 
 ```python
@@ -558,10 +584,12 @@ class QuantumStressTensor:
 Compute the stress tensor for a material.
 
 **Parameters:**
+
 - `wavefunction` (Wavefunction): Electronic wavefunction
 - `cell` (UnitCell): Unit cell specification
 
 **Returns:**
+
 - `StressTensor` object
 
 ```python
@@ -577,9 +605,11 @@ print(f"Stress tensor:\n{stress.tensor}")
 Compute elastic constants from stress-strain calculations.
 
 **Parameters:**
+
 - `material` (Material): Material specification
 
 **Returns:**
+
 - `ElasticConstants` object
 
 ```python
@@ -639,9 +669,11 @@ def __init__(
 Run a complete tire simulation.
 
 **Parameters:**
+
 - `config` (SimulationConfig): Simulation configuration
 
 **Returns:**
+
 - `SimulationResult` object
 
 ```python
@@ -681,9 +713,11 @@ class FactorySimulator:
 Simulate compound mixing process.
 
 **Parameters:**
+
 - `recipe` (MixingRecipe): Mixing recipe specification
 
 **Returns:**
+
 - `MixingResult` with dispersion and properties
 
 ```python
@@ -704,10 +738,12 @@ print(f"Dispersion index: {result.dispersion_index:.2f}")
 Simulate vulcanization process.
 
 **Parameters:**
+
 - `compound` (Compound): Uncured compound
 - `cure_params` (CureParameters): Curing parameters
 
 **Returns:**
+
 - `CuringResult` with cure state and properties
 
 ```python
@@ -747,10 +783,12 @@ class OnVehicleSimulator:
 Simulate a complete drive cycle.
 
 **Parameters:**
+
 - `cycle` (DriveCycle): Drive cycle specification
 - `tire` (Tire): Tire specification
 
 **Returns:**
+
 - `DriveResult` with time-series data
 
 ```python
@@ -771,9 +809,11 @@ plt.show()
 Update tire state from real-time sensor data.
 
 **Parameters:**
+
 - `sensor_data` (SensorData): Current sensor readings
 
 **Returns:**
+
 - `TireState` with updated predictions
 
 ```python
@@ -813,10 +853,12 @@ class CatastrophicSimulator:
 Simulate tire blowout event.
 
 **Parameters:**
+
 - `tire` (Tire): Tire specification
 - `conditions` (BlowoutConditions): Failure conditions
 
 **Returns:**
+
 - `BlowoutResult` with failure dynamics
 
 ```python
@@ -837,10 +879,12 @@ print(f"Energy release: {result.energy_release:.2e} J")
 Predict probability of catastrophic failure.
 
 **Parameters:**
+
 - `tire` (Tire): Tire specification
 - `conditions` (OperatingConditions): Operating conditions
 
 **Returns:**
+
 - Failure probability (0-1)
 
 ```python
@@ -877,10 +921,12 @@ class PerformanceBenchmark:
 Benchmark an algorithm's performance.
 
 **Parameters:**
+
 - `algorithm` (Algorithm): Algorithm to benchmark
 - `inputs` (List[Any]): Test inputs of varying sizes
 
 **Returns:**
+
 - `BenchmarkResult` with timing and scaling data
 
 ```python
@@ -899,10 +945,12 @@ print(f"Scaling exponent: {result.scaling_exponent:.2f}")
 Compare performance across quantum backends.
 
 **Parameters:**
+
 - `algorithm` (Algorithm): Algorithm to benchmark
 - `backends` (List[str]): Backend names to compare
 
 **Returns:**
+
 - `ComparisonResult` with comparative metrics
 
 ```python
@@ -939,10 +987,12 @@ class AccuracyValidator:
 Validate simulated results against experimental data.
 
 **Parameters:**
+
 - `simulated` (np.ndarray): Simulated values
 - `experimental` (np.ndarray): Experimental values
 
 **Returns:**
+
 - `ValidationResult` with statistical metrics
 
 ```python
@@ -1215,9 +1265,10 @@ print(f"  Estimated cost: ${result.cost:.2f}/kg")
 ## Support
 
 For technical support and questions:
-- **Documentation**: https://quasim.io/docs/goodyear
-- **Issue Tracker**: https://github.com/quasim/goodyear-pilot/issues
-- **Email**: support@quasim.io
+
+- **Documentation**: <https://quasim.io/docs/goodyear>
+- **Issue Tracker**: <https://github.com/quasim/goodyear-pilot/issues>
+- **Email**: <support@quasim.io>
 
 ---
 
