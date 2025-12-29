@@ -13,8 +13,7 @@ Contains 25 synthetic elastomer materials with complete specifications:
 
 from __future__ import annotations
 
-from dataclasses import dataclass, field
-from typing import ClassVar
+from dataclasses import dataclass
 
 import numpy as np
 
@@ -24,7 +23,6 @@ from goodyear_quantum_pilot.materials.base import (
     HamiltonianParameters,
     Material,
     MaterialCategory,
-    MaterialProperty,
     MechanicalBehavior,
     MolecularSpecification,
     PropertyType,
@@ -36,14 +34,14 @@ from goodyear_quantum_pilot.materials.base import (
 @dataclass
 class Elastomer(Material):
     """Base class for synthetic elastomers.
-    
+
     Provides common functionality for all synthetic elastomer types.
     """
-    
+
     styrene_content: float = 0.0  # % for SBR types
     acrylonitrile_content: float = 0.0  # % for NBR types
     vinyl_content: float = 0.0  # %
-    
+
     def get_abrasion_resistance(self) -> float:
         """Calculate abrasion resistance index."""
         base = self.wear.abrasion_index
@@ -55,7 +53,7 @@ class Elastomer(Material):
 @dataclass
 class SyntheticElastomer(Elastomer):
     """General synthetic elastomer class."""
-    
+
     polymerization_type: str = "emulsion"  # emulsion, solution, or anionic
     coupling_agent: str = "none"
     functionalization: str = "none"
@@ -68,13 +66,13 @@ def create_sbr_material(
     polymerization: str = "emulsion",
 ) -> Material:
     """Create an SBR material variant.
-    
+
     Args:
         variant: Variant identifier
         styrene: Styrene content (%)
         vinyl: Vinyl content (%)
         polymerization: Polymerization type
-        
+
     Returns:
         Configured SBR material
     """
@@ -84,17 +82,17 @@ def create_sbr_material(
         category=MaterialCategory.SYNTHETIC_ELASTOMER,
         description=f"SBR with {styrene}% styrene, {vinyl}% vinyl via {polymerization} polymerization",
     )
-    
+
     # Molecular specification
     material.molecular = MolecularSpecification(
         formula="(C8H8)n(C4H6)m",
-        molecular_weight=104.15 * styrene/100 + 54.09 * (1 - styrene/100),
+        molecular_weight=104.15 * styrene / 100 + 54.09 * (1 - styrene / 100),
         smiles="C=Cc1ccccc1.C=CC=C",
         monomer_units=2000,
         chain_length=80.0 + 0.5 * vinyl,
         crosslink_density=120.0 - 0.3 * styrene,
     )
-    
+
     # Hamiltonian parameters (simplified for demonstration)
     num_orb = 8 + int(styrene / 10)
     material.hamiltonian = HamiltonianParameters(
@@ -105,7 +103,7 @@ def create_sbr_material(
         num_electrons=2 * num_orb,
         basis_set="cc-pVDZ",
     )
-    
+
     # Mechanical behavior
     material.mechanical = MechanicalBehavior(
         model_type="mooney_rivlin",
@@ -114,7 +112,7 @@ def create_sbr_material(
         viscosity=1200 + 20 * styrene,
         relaxation_time=0.08 + 0.001 * styrene,
     )
-    
+
     # Thermal behavior - Tg increases with styrene content
     material.thermal = ThermalBehavior(
         glass_transition=213.0 + 1.5 * styrene,  # K
@@ -124,7 +122,7 @@ def create_sbr_material(
         specific_heat=1850 + 5 * styrene,
         heat_buildup_rate=0.015 - 0.0001 * vinyl,
     )
-    
+
     # Wear model
     material.wear = WearModel(
         abrasion_index=100.0 + 0.5 * vinyl,
@@ -134,14 +132,14 @@ def create_sbr_material(
         paris_m=4.0 - 0.02 * vinyl,
         tearing_energy=25.0 + 0.2 * styrene,
     )
-    
+
     # Environmental reactivity
     material.environmental = EnvironmentalReactivity(
         ozone_resistance=50.0 + 2 * vinyl,
         uv_stability=300.0,
         oxidation_rate=1.5e-5,
     )
-    
+
     # Economic factors
     material.economic = EconomicFactors(
         raw_material_cost=2.20 + 0.02 * styrene,
@@ -149,7 +147,7 @@ def create_sbr_material(
         manufacturability_score=85.0 - 0.1 * styrene,
         sustainability_score=55.0,
     )
-    
+
     # Properties
     material.set_property(PropertyType.TENSILE_STRENGTH, 18.0 + 0.15 * styrene, "MPa")
     material.set_property(PropertyType.ELONGATION, 550.0 - 2 * styrene, "%")
@@ -157,7 +155,7 @@ def create_sbr_material(
     material.set_property(PropertyType.RESILIENCE, 55.0 - 0.3 * styrene, "%")
     material.set_property(PropertyType.HYSTERESIS, 0.15 + 0.002 * styrene, "dimensionless")
     material.set_property(PropertyType.ABRASION_RESISTANCE, 100.0 + 0.5 * vinyl, "index")
-    
+
     return material
 
 
@@ -166,11 +164,11 @@ def create_nbr_material(
     acn: float,  # Acrylonitrile content
 ) -> Material:
     """Create an NBR material variant.
-    
+
     Args:
         variant: Variant identifier
         acn: Acrylonitrile content (%)
-        
+
     Returns:
         Configured NBR material
     """
@@ -180,41 +178,41 @@ def create_nbr_material(
         category=MaterialCategory.SYNTHETIC_ELASTOMER,
         description=f"NBR with {acn}% acrylonitrile content",
     )
-    
+
     material.molecular = MolecularSpecification(
         formula="(C3H3N)n(C4H6)m",
-        molecular_weight=53.06 * acn/100 + 54.09 * (1 - acn/100),
+        molecular_weight=53.06 * acn / 100 + 54.09 * (1 - acn / 100),
         chain_length=70.0,
         crosslink_density=110.0,
     )
-    
+
     material.thermal = ThermalBehavior(
         glass_transition=233.0 + 1.2 * acn,  # Higher ACN = higher Tg
         degradation_temp=513.0,
     )
-    
+
     material.mechanical = MechanicalBehavior(
         c10=0.5 + 0.008 * acn,
         c01=0.12,
     )
-    
+
     material.environmental = EnvironmentalReactivity(
         ozone_resistance=40.0,
         uv_stability=250.0,
     )
-    
+
     material.economic = EconomicFactors(
         raw_material_cost=3.50 + 0.05 * acn,
         processing_cost=1.60,
         manufacturability_score=80.0,
     )
-    
+
     # Oil resistance improves with ACN content
     oil_resistance = 50.0 + 1.5 * acn
     material.set_property(PropertyType.OIL_RESISTANCE, oil_resistance, "index")
     material.set_property(PropertyType.TENSILE_STRENGTH, 20.0 + 0.1 * acn, "MPa")
     material.set_property(PropertyType.ELONGATION, 450.0 - acn, "%")
-    
+
     return material
 
 
@@ -266,20 +264,20 @@ def create_epdm_material(
         category=MaterialCategory.SYNTHETIC_ELASTOMER,
         description=f"EPDM with {ethylene}% ethylene, {diene}% diene",
     )
-    
+
     material.thermal = ThermalBehavior(
         glass_transition=213.0 - 0.3 * ethylene,
         degradation_temp=573.0,  # Excellent heat resistance
     )
-    
+
     material.environmental = EnvironmentalReactivity(
         ozone_resistance=500.0,  # Excellent ozone resistance
         uv_stability=1000.0,
     )
-    
+
     material.set_property(PropertyType.OZONE_RESISTANCE, 500.0, "hours")
     material.set_property(PropertyType.TENSILE_STRENGTH, 12.0 + 0.05 * ethylene, "MPa")
-    
+
     return material
 
 
@@ -298,20 +296,20 @@ def create_cr_material(variant: str) -> Material:
         category=MaterialCategory.SYNTHETIC_ELASTOMER,
         description="Chloroprene rubber with excellent flame and oil resistance",
     )
-    
+
     material.thermal = ThermalBehavior(
         glass_transition=233.0,
         degradation_temp=513.0,
     )
-    
+
     material.environmental = EnvironmentalReactivity(
         ozone_resistance=200.0,
         uv_stability=400.0,
     )
-    
+
     material.set_property(PropertyType.TENSILE_STRENGTH, 25.0, "MPa")
     material.set_property(PropertyType.OIL_RESISTANCE, 70.0, "index")
-    
+
     return material
 
 
@@ -328,19 +326,19 @@ def create_br_material(variant: str, cis_content: float) -> Material:
         category=MaterialCategory.SYNTHETIC_ELASTOMER,
         description=f"High-cis polybutadiene with {cis_content}% cis content",
     )
-    
+
     material.thermal = ThermalBehavior(
         glass_transition=163.0 - 0.3 * cis_content,  # Very low Tg
         degradation_temp=523.0,
     )
-    
+
     material.wear = WearModel(
         abrasion_index=180.0 + 0.5 * cis_content,  # Excellent abrasion
     )
-    
+
     material.set_property(PropertyType.RESILIENCE, 85.0 + 0.1 * cis_content, "%")
     material.set_property(PropertyType.ABRASION_RESISTANCE, 180.0, "index")
-    
+
     return material
 
 
@@ -357,19 +355,19 @@ def create_iir_material(variant: str) -> Material:
         category=MaterialCategory.SYNTHETIC_ELASTOMER,
         description="Butyl rubber with excellent gas impermeability",
     )
-    
+
     material.thermal = ThermalBehavior(
         glass_transition=203.0,
     )
-    
+
     # Excellent damping/hysteresis for noise reduction
     material.mechanical = MechanicalBehavior(
         viscosity=5000.0,
         relaxation_time=1.0,
     )
-    
+
     material.set_property(PropertyType.HYSTERESIS, 0.45, "dimensionless")
-    
+
     return material
 
 
@@ -386,20 +384,20 @@ def create_hnbr_material(variant: str, acn: float, hydrogenation: float) -> Mate
         category=MaterialCategory.SYNTHETIC_ELASTOMER,
         description=f"HNBR with {acn}% ACN, {hydrogenation}% hydrogenation",
     )
-    
+
     material.thermal = ThermalBehavior(
         glass_transition=243.0,
         degradation_temp=573.0,  # Excellent heat resistance
     )
-    
+
     material.environmental = EnvironmentalReactivity(
         ozone_resistance=1000.0,  # Excellent
         oxidation_rate=1e-7,
     )
-    
+
     material.set_property(PropertyType.TENSILE_STRENGTH, 30.0, "MPa")
     material.set_property(PropertyType.OIL_RESISTANCE, 95.0, "index")
-    
+
     return material
 
 
@@ -415,24 +413,24 @@ def create_fkm_material(variant: str, fluorine: float) -> Material:
         category=MaterialCategory.SYNTHETIC_ELASTOMER,
         description=f"FKM with {fluorine}% fluorine content",
     )
-    
+
     material.thermal = ThermalBehavior(
         glass_transition=253.0,
         degradation_temp=623.0,  # Exceptional heat resistance
     )
-    
+
     material.environmental = EnvironmentalReactivity(
         ozone_resistance=10000.0,
         chemical_resistance=98.0,
     )
-    
+
     material.economic = EconomicFactors(
         raw_material_cost=50.0 + fluorine,  # Expensive
         processing_cost=15.0,
     )
-    
+
     material.set_property(PropertyType.CHEMICAL_RESISTANCE, 98.0, "index")
-    
+
     return material
 
 

@@ -21,14 +21,14 @@ Architecture:
 
 Example:
     >>> from goodyear_quantum_pilot.simulation import TireSimulator
-    >>> 
+    >>>
     >>> # Create simulator with quantum materials
     >>> sim = TireSimulator(
     ...     tire_model="P225/60R16",
     ...     compound=compound_spec,
     ...     backend="gpu",
     ... )
-    >>> 
+    >>>
     >>> # Run full lifecycle simulation
     >>> results = sim.run_lifecycle(
     ...     factory_params=factory_config,
@@ -39,79 +39,84 @@ Example:
 
 from __future__ import annotations
 
+# Catastrophic failure simulation
+from .catastrophic import (
+    BlowoutSimulator,
+    CatastrophicSimulator,
+    FailureEvent,
+    FailureMode,
+    ImpactDamageSimulator,
+    RunFlatSimulator,
+    SeverityLevel,
+    TireStructure,
+    TreadSeparationSimulator,
+)
+from .catastrophic import (
+    DamageState as CatastrophicDamageState,
+)
+
 # Core simulation
 from .core import (
-    TireSimulator,
-    SimulationConfig,
-    TireGeometry,
     LoadCase,
+    MaterialIntegrator,
     OperatingCondition,
     PhysicsEngine,
-    MaterialIntegrator,
+    SimulationConfig,
+    TireGeometry,
+    TireSimulator,
+)
+
+# Environmental simulation
+from .environment import (
+    ChemicalDegradation,
+    ClimateZone,
+    EnvironmentalConditions,
+    EnvironmentSimulator,
+    HumidityDegradation,
+    MaterialState,
+    OzoneDegradation,
+    ThermalOxidation,
+    UVDegradation,
 )
 
 # Factory simulation
 from .factory import (
-    FactorySimulator,
     CuringSimulator,
-    MoldFlowSimulator,
     DefectPredictor,
+    FactorySimulator,
+    MoldFlowSimulator,
     QualityController,
-)
-
-# Shipping simulation
-from .shipping import (
-    ShippingSimulator,
-    VibrationSimulator,
-    TemperatureSimulator as ShippingTempSimulator,
-    HumiditySimulator as ShippingHumiditySimulator,
-    ShockSimulator,
-    CompressionSimulator,
-    TransportCondition,
-    TransportMode,
-    DegradationState,
 )
 
 # On-vehicle simulation
 from .on_vehicle import (
     OnVehicleSimulator,
+    RoadSurface,
     RollingDynamics,
     ThermalModel,
-    WearSimulator,
-    TractionModel,
-    TireForces,
-    WearState,
     ThermalState,
-    RoadSurface,
+    TireForces,
+    TractionModel,
+    WearSimulator,
+    WearState,
 )
 
-# Environmental simulation
-from .environment import (
-    EnvironmentSimulator,
-    UVDegradation,
-    OzoneDegradation,
-    ThermalOxidation,
-    HumidityDegradation,
-    ChemicalDegradation,
-    EnvironmentalConditions,
-    MaterialState,
-    ClimateZone,
+# Shipping simulation
+from .shipping import (
+    CompressionSimulator,
+    DegradationState,
+    ShippingSimulator,
+    ShockSimulator,
+    TransportCondition,
+    TransportMode,
+    VibrationSimulator,
 )
-
-# Catastrophic failure simulation
-from .catastrophic import (
-    CatastrophicSimulator,
-    BlowoutSimulator,
-    TreadSeparationSimulator,
-    ImpactDamageSimulator,
-    RunFlatSimulator,
-    FailureMode,
-    FailureEvent,
-    SeverityLevel,
-    TireStructure,
-    DamageState as CatastrophicDamageState,
+from .shipping import (
+    HumiditySimulator as ShippingHumiditySimulator,
 )
-
+from .shipping import (
+    TemperatureSimulator as ShippingTempSimulator,
+)
 
 __all__ = [
     # Core simulation
