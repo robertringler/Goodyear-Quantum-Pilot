@@ -1,5 +1,7 @@
 QuASIM  
+
 ### Quantum-Accelerated Simulation and Modeling Engine  
+
 High-Assurance • Deterministic • HPC-Optimized • Multi-Domain Scientific Computing
 
 QuASIM is a high-assurance, quantum-accelerated simulation framework engineered for deterministic, reproducible, multi-domain modeling.  
@@ -121,22 +123,26 @@ Structured logs, metrics, and dashboards.
 ## Technical Pillars
 
 ### **Deterministic Compute**
+
 - Seed governance  
 - Controlled randomness  
 - Replayable execution  
 - Traceable compute graphs  
 
 ### **High-Performance Acceleration**
+
 - Tensor contraction kernels  
 - Batched solver pipelines  
 - Multi-core/GPU optional paths  
 
 ### **Scientific Transparency**
+
 - Config-fingerprinting  
 - Metadata embedding  
 - Provenance tracking  
 
 ### **Safety-Critical Software Practices**
+
 - Static analysis  
 - Runtime validation  
 - Error-bounded integrators  
@@ -147,22 +153,26 @@ Structured logs, metrics, and dashboards.
 ## Domain Applications (Research-Safe)
 
 ### **Aerospace Research**
+
 - Trajectory analysis  
 - Orbital propagation  
 - Reference-frame transforms  
 - Mission-planning simulation  
 
 ### **Energy & Infrastructure Studies**
+
 - Grid-stability modeling  
 - Time-series forecasting  
 - Renewable-integration experiments  
 
 ### **Economic & Systemic Modeling**
+
 - Risk propagation  
 - Monte Carlo scenario exploration  
 - Complex-system behavior analysis  
 
 ### **Physics & Multi-Domain Simulation**
+
 - ODE/PDE numerical solving  
 - Multi-physics coupling  
 - Uncertainty quantification  
@@ -172,11 +182,13 @@ Structured logs, metrics, and dashboards.
 ## Installation & Quickstart
 
 ### Prerequisites
+
 - Python 3.10+  
 - (Optional) Kubernetes 1.28+ for distributed workloads  
 - (Optional) GPU drivers for accelerated Q-Core modules  
 
 ### Setup
+
 ```bash
 git clone https://github.com/robertringler/QuASIM.git
 cd QuASIM

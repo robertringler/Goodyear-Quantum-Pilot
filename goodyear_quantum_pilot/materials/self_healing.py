@@ -17,11 +17,8 @@ import numpy as np
 
 from goodyear_quantum_pilot.materials.base import (
     EconomicFactors,
-    EnvironmentalReactivity,
-    HamiltonianParameters,
     Material,
     MaterialCategory,
-    MaterialProperty,
     MechanicalBehavior,
     MolecularSpecification,
     PropertyType,
@@ -32,11 +29,11 @@ from goodyear_quantum_pilot.materials.base import (
 
 class HealingMechanism(Enum):
     """Types of self-healing mechanisms."""
-    
+
     MICROCAPSULE = auto()  # Embedded healing agent capsules
-    VASCULAR = auto()      # Vascular network delivery
-    INTRINSIC = auto()     # Inherent reversible bonds
-    NANOBOT = auto()       # Nanobot-driven repair
+    VASCULAR = auto()  # Vascular network delivery
+    INTRINSIC = auto()  # Inherent reversible bonds
+    NANOBOT = auto()  # Nanobot-driven repair
     SHAPE_MEMORY = auto()  # Shape memory assisted
     PHOTOTRIGGERED = auto()  # Light-activated healing
 
@@ -44,7 +41,7 @@ class HealingMechanism(Enum):
 @dataclass
 class HealingParameters:
     """Parameters for self-healing behavior.
-    
+
     Attributes:
         mechanism: Type of healing mechanism
         healing_efficiency: Maximum healing efficiency (0-1)
@@ -54,7 +51,7 @@ class HealingParameters:
         temperature_range: Operating temperature range (K)
         autonomous: Whether healing is autonomous
     """
-    
+
     mechanism: HealingMechanism = HealingMechanism.INTRINSIC
     healing_efficiency: float = 0.85  # 0-1
     healing_time: float = 24.0  # hours
@@ -62,7 +59,7 @@ class HealingParameters:
     trigger_threshold: float = 0.1  # Strain at trigger
     temperature_range: tuple[float, float] = (250.0, 373.0)  # K
     autonomous: bool = True
-    
+
     def predict_healed_strength(
         self,
         original_strength: float,
@@ -70,35 +67,35 @@ class HealingParameters:
         cycle_number: int = 1,
     ) -> float:
         """Predict strength after healing.
-        
+
         Args:
             original_strength: Original material strength
             damage_fraction: Fraction of material damaged
             cycle_number: Current healing cycle
-            
+
         Returns:
             Healed strength
         """
         # Efficiency decreases with cycles
         cycle_factor = 0.95 ** (cycle_number - 1)
         effective_efficiency = self.healing_efficiency * cycle_factor
-        
+
         # Healed portion
         healed_fraction = damage_fraction * effective_efficiency
         remaining_damage = damage_fraction - healed_fraction
-        
+
         return original_strength * (1 - remaining_damage)
 
 
 class SelfHealingPolymer(Material):
     """Self-healing polymer tire material.
-    
+
     Materials that can autonomously repair damage to extend
     tire lifetime and improve safety.
     """
-    
+
     healing: HealingParameters = field(default_factory=HealingParameters)
-    
+
     def __init__(
         self,
         material_id: str,
@@ -115,51 +112,48 @@ class SelfHealingPolymer(Material):
         )
         self.healing = healing_params or HealingParameters()
         self.patents = ["Patent #96", "Patent #97"]
-    
+
     def simulate_damage_healing_cycle(
         self,
         initial_strength: float,
         damage_events: list[float],
     ) -> list[float]:
         """Simulate multiple damage-healing cycles.
-        
+
         Args:
             initial_strength: Initial material strength (MPa)
             damage_events: List of damage fractions for each event
-            
+
         Returns:
             List of strengths after each healing event
         """
         strengths = [initial_strength]
         current_strength = initial_strength
-        
+
         for cycle, damage in enumerate(damage_events, 1):
             if cycle > self.healing.healing_cycles:
                 # Healing exhausted
-                current_strength *= (1 - damage)
+                current_strength *= 1 - damage
             else:
                 current_strength = self.healing.predict_healed_strength(
                     current_strength, damage, cycle
                 )
             strengths.append(current_strength)
-        
+
         return strengths
-    
+
     def get_effective_lifetime_extension(self) -> float:
         """Calculate effective lifetime extension factor.
-        
+
         Returns:
             Multiplicative lifetime extension (e.g., 2.0 = 2x lifetime)
         """
         # Based on healing efficiency and cycles
         avg_efficiency = self.healing.healing_efficiency * 0.95 ** (self.healing.healing_cycles / 2)
-        
+
         # Each cycle extends life by efficiency fraction
-        extension = 1 + sum(
-            avg_efficiency * (0.95 ** i) 
-            for i in range(self.healing.healing_cycles)
-        )
-        
+        extension = 1 + sum(avg_efficiency * (0.95**i) for i in range(self.healing.healing_cycles))
+
         return extension
 
 
@@ -170,13 +164,13 @@ def create_microcapsule_healing_material(
     healing_agent: str,
 ) -> SelfHealingPolymer:
     """Create microcapsule-based self-healing material.
-    
+
     Args:
         variant: Material variant ID
         capsule_size: Average capsule diameter (μm)
         capsule_loading: Capsule loading (vol%)
         healing_agent: Type of healing agent
-        
+
     Returns:
         Microcapsule healing material
     """
@@ -196,45 +190,45 @@ def create_microcapsule_healing_material(
             autonomous=True,
         ),
     )
-    
+
     material.molecular = MolecularSpecification(
         formula="SBR + capsules",
         crosslink_density=100.0,
     )
-    
+
     # Mechanical - capsules slightly reduce properties
     capsule_factor = 1 - 0.02 * capsule_loading
-    
+
     material.mechanical = MechanicalBehavior(
         c10=0.4 * capsule_factor,
         c01=0.1 * capsule_factor,
         viscosity=1200,
     )
-    
+
     material.thermal = ThermalBehavior(
         glass_transition=218.0,
         degradation_temp=513.0,
     )
-    
+
     material.wear = WearModel(
         abrasion_index=90.0 * capsule_factor,
         fatigue_exponent=2.8,  # Capsules can initiate cracks
     )
-    
+
     material.economic = EconomicFactors(
         raw_material_cost=5.00 + 0.5 * capsule_loading,
         processing_cost=2.50,
         manufacturability_score=70.0,
     )
-    
+
     # Properties
     material.set_property(PropertyType.TENSILE_STRENGTH, 18.0 * capsule_factor, "MPa")
     material.set_property(PropertyType.HEALING_EFFICIENCY, 0.80, "fraction")
     material.set_property(PropertyType.HEALING_TIME, 48.0, "hours")
     material.set_property(PropertyType.HEALING_CYCLES, 1, "cycles")
-    
+
     material.patents = ["Patent #96"]
-    
+
     return material
 
 
@@ -244,12 +238,12 @@ def create_vascular_healing_material(
     channel_density: float,
 ) -> SelfHealingPolymer:
     """Create vascular network self-healing material.
-    
+
     Args:
         variant: Material variant ID
         channel_diameter: Vascular channel diameter (μm)
         channel_density: Channel density (channels/mm²)
-        
+
     Returns:
         Vascular healing material
     """
@@ -269,34 +263,34 @@ def create_vascular_healing_material(
             autonomous=True,
         ),
     )
-    
+
     # Channels affect mechanical properties
-    void_fraction = np.pi * (channel_diameter/1000)**2 * channel_density / 4
+    void_fraction = np.pi * (channel_diameter / 1000) ** 2 * channel_density / 4
     void_factor = 1 - void_fraction
-    
+
     material.mechanical = MechanicalBehavior(
         c10=0.38 * void_factor,
         c01=0.09 * void_factor,
     )
-    
+
     material.wear = WearModel(
         abrasion_index=85.0 * void_factor,
         fatigue_exponent=2.5,
     )
-    
+
     material.economic = EconomicFactors(
         raw_material_cost=8.00,
         processing_cost=5.00,  # Complex manufacturing
         manufacturability_score=50.0,
     )
-    
+
     material.set_property(PropertyType.TENSILE_STRENGTH, 16.0 * void_factor, "MPa")
     material.set_property(PropertyType.HEALING_EFFICIENCY, 0.90, "fraction")
     material.set_property(PropertyType.HEALING_TIME, 24.0, "hours")
     material.set_property(PropertyType.HEALING_CYCLES, 50, "cycles")
-    
+
     material.patents = ["Patent #97"]
-    
+
     return material
 
 
@@ -306,18 +300,18 @@ def create_intrinsic_healing_material(
     exchange_rate: float,
 ) -> SelfHealingPolymer:
     """Create intrinsic self-healing material.
-    
+
     Args:
         variant: Material variant ID
         bond_type: Type of reversible bond
         exchange_rate: Bond exchange rate (1/s)
-        
+
     Returns:
         Intrinsic healing material
     """
     # Healing time inversely related to exchange rate
     healing_time = 10.0 / exchange_rate  # hours
-    
+
     material = SelfHealingPolymer(
         material_id=f"ISH-{variant}",
         name=f"Intrinsic Self-Healing {variant}",
@@ -333,44 +327,44 @@ def create_intrinsic_healing_material(
             autonomous=True,
         ),
     )
-    
+
     material.molecular = MolecularSpecification(
         formula="Polymer-[Reversible-Bond]",
         crosslink_density=120.0,
         vulcanization_system="reversible_covalent",
     )
-    
+
     material.mechanical = MechanicalBehavior(
         c10=0.42,
         c01=0.11,
         viscosity=1800,  # Higher viscosity from dynamic bonds
         relaxation_time=1.0 / exchange_rate,
     )
-    
+
     material.thermal = ThermalBehavior(
         glass_transition=215.0,
         degradation_temp=493.0,  # Lower due to dynamic bonds
     )
-    
+
     material.wear = WearModel(
         abrasion_index=110.0,
         fatigue_exponent=2.0,  # Excellent fatigue from healing
         endurance_limit=80.0,
     )
-    
+
     material.economic = EconomicFactors(
         raw_material_cost=7.50,
         processing_cost=3.00,
         manufacturability_score=65.0,
     )
-    
+
     material.set_property(PropertyType.TENSILE_STRENGTH, 20.0, "MPa")
     material.set_property(PropertyType.HEALING_EFFICIENCY, 0.95, "fraction")
     material.set_property(PropertyType.HEALING_TIME, healing_time, "hours")
     material.set_property(PropertyType.HEALING_CYCLES, 100, "cycles")
-    
+
     material.patents = ["Patent #98"]
-    
+
     return material
 
 
@@ -380,12 +374,12 @@ def create_nanobot_healing_material(
     repair_rate: float,
 ) -> SelfHealingPolymer:
     """Create nanobot-driven self-healing material.
-    
+
     Args:
         variant: Material variant ID
         nanobot_density: Nanobot density (units/mm³)
         repair_rate: Repair rate per nanobot (nm³/s)
-        
+
     Returns:
         Nanobot healing material
     """
@@ -394,7 +388,7 @@ def create_nanobot_healing_material(
     damage_volume = 1e9  # nm³
     total_repair_rate = nanobot_density * repair_rate  # nm³/s
     healing_time = damage_volume / total_repair_rate / 3600  # hours
-    
+
     material = SelfHealingPolymer(
         material_id=f"NBH-{variant}",
         name=f"Nanobot Healing {variant}",
@@ -411,23 +405,23 @@ def create_nanobot_healing_material(
             autonomous=True,
         ),
     )
-    
+
     material.molecular = MolecularSpecification(
         formula="Elastomer + Nanobots",
         crosslink_density=130.0,
     )
-    
+
     material.mechanical = MechanicalBehavior(
         c10=0.48,
         c01=0.12,
         viscosity=1100,
     )
-    
+
     material.thermal = ThermalBehavior(
         glass_transition=212.0,
         degradation_temp=543.0,
     )
-    
+
     # Excellent wear due to continuous repair
     material.wear = WearModel(
         abrasion_index=200.0,  # Effective wear near zero
@@ -435,20 +429,20 @@ def create_nanobot_healing_material(
         fatigue_exponent=1.5,
         endurance_limit=150.0,
     )
-    
+
     material.economic = EconomicFactors(
         raw_material_cost=50.00,  # Expensive nanobot tech
         processing_cost=20.00,
         manufacturability_score=30.0,  # Very difficult
     )
-    
+
     material.set_property(PropertyType.TENSILE_STRENGTH, 25.0, "MPa")
     material.set_property(PropertyType.HEALING_EFFICIENCY, 0.99, "fraction")
     material.set_property(PropertyType.HEALING_TIME, healing_time, "hours")
     material.set_property(PropertyType.HEALING_CYCLES, 1000, "cycles")
-    
+
     material.patents = ["Patent #99", "Patent #100"]
-    
+
     return material
 
 
@@ -458,12 +452,12 @@ def create_shape_memory_healing_material(
     recovery_ratio: float,
 ) -> SelfHealingPolymer:
     """Create shape memory assisted healing material.
-    
+
     Args:
         variant: Material variant ID
         activation_temp: Shape recovery temperature (K)
         recovery_ratio: Shape recovery ratio (0-1)
-        
+
     Returns:
         Shape memory healing material
     """
@@ -485,21 +479,21 @@ def create_shape_memory_healing_material(
             autonomous=False,  # Needs temperature trigger
         ),
     )
-    
+
     material.thermal = ThermalBehavior(
         glass_transition=activation_temp - 30,
         degradation_temp=523.0,
     )
-    
+
     material.mechanical = MechanicalBehavior(
         c10=0.50,
         c01=0.13,
     )
-    
+
     material.set_property(PropertyType.TENSILE_STRENGTH, 22.0, "MPa")
     material.set_property(PropertyType.HEALING_EFFICIENCY, recovery_ratio * 0.9, "fraction")
     material.set_property(PropertyType.HEALING_TIME, 1.0, "hours")
-    
+
     return material
 
 
