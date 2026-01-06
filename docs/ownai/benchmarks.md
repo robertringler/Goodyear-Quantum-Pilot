@@ -1,6 +1,6 @@
 # QuASIM-Own Benchmark Results
 
-Generated: 2026-01-05T03:48:17.717858
+Generated: 2026-01-06T03:23:24.263188
 
 Total runs: 25
 
@@ -10,16 +10,16 @@ Total runs: 25
 
 | Model | Primary Metric | Secondary Metric | Latency (ms) | Stability | Deterministic |
 |-------|---------------|------------------|--------------|-----------|---------------|
-| logreg | 0.6600 ± 0.0000 | 0.6610 ± 0.0000 | 0.10 | 1.000 | ✅ |
-| mlp | 0.8760 ± 0.0153 | 0.8763 ± 0.0154 | 0.17 | 0.983 | ❌ |
-| rf | 0.7850 ± 0.0138 | 0.7850 ± 0.0140 | 4.41 | 0.982 | ❌ |
-| slt | 0.7780 ± 0.0186 | 0.7779 ± 0.0185 | 7.21 | 0.976 | ❌ |
+| logreg | 0.6600 ± 0.0000 | 0.6610 ± 0.0000 | 0.09 | 1.000 | ✅ |
+| mlp | 0.8770 ± 0.0160 | 0.8773 ± 0.0161 | 0.16 | 0.982 | ❌ |
+| rf | 0.7850 ± 0.0138 | 0.7850 ± 0.0140 | 3.62 | 0.982 | ❌ |
+| slt | 0.7780 ± 0.0186 | 0.7779 ± 0.0185 | 6.03 | 0.976 | ❌ |
 
 ### text-cls
 
 | Model | Primary Metric | Secondary Metric | Latency (ms) | Stability | Deterministic |
 |-------|---------------|------------------|--------------|-----------|---------------|
-| slt | 0.9910 ± 0.0020 | 0.9910 ± 0.0020 | 15.18 | 0.998 | ❌ |
+| slt | 0.9910 ± 0.0020 | 0.9910 ± 0.0020 | 14.35 | 0.998 | ❌ |
 
 ## Reliability-per-Watt Ranking
 
@@ -27,8 +27,8 @@ Computed as: `(stability × primary_metric) / energy_proxy`
 
 | Rank | Task | Model | Reliability-per-Watt |
 |------|------|-------|---------------------|
-| 1 | tabular-cls | logreg | 100.228969 |
-| 2 | tabular-cls | mlp | 78.923712 |
-| 3 | tabular-cls | rf | 2.688104 |
-| 4 | tabular-cls | slt | 1.620447 |
-| 5 | text-cls | slt | 1.002490 |
+| 1 | tabular-cls | logreg | 113.342516 |
+| 2 | tabular-cls | mlp | 80.388366 |
+| 3 | tabular-cls | rf | 3.274171 |
+| 4 | tabular-cls | slt | 1.936408 |
+| 5 | text-cls | slt | 1.059960 |
