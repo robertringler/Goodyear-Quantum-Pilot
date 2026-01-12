@@ -17,7 +17,7 @@ Modules:
 
 Example:
     >>> from goodyear_quantum_pilot.algorithms import PolymerVQE, TireQAOA
-    >>> 
+    >>>
     >>> # Initialize VQE for polymer ground state
     >>> vqe = PolymerVQE(
     ...     polymer_chain=sbr_chain,
@@ -25,7 +25,7 @@ Example:
     ...     ansatz="hardware_efficient",
     ... )
     >>> ground_state = vqe.run(shots=10000)
-    >>> 
+    >>>
     >>> # Optimize material blend with QAOA
     >>> qaoa = TireQAOA(
     ...     materials=[sbr, nbr, carbon_black],
