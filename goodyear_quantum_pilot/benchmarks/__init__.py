@@ -8,30 +8,30 @@ Provides comprehensive performance evaluation for:
 - Predictive accuracy validation
 """
 
-from .performance import (
-    PerformanceBenchmark,
-    QuantumBenchmark,
-    ClassicalBenchmark,
-    SpeedupAnalyzer,
-    ScalingAnalyzer,
-)
 from .accuracy import (
     AccuracyValidator,
     ExperimentalComparison,
-    PredictionMetrics,
     MaterialValidation,
+    PredictionMetrics,
 )
 from .analytics import (
     AnalyticsDashboard,
-    ReportGenerator,
     MetricsCollector,
+    ReportGenerator,
     TrendAnalyzer,
 )
 from .comparison import (
-    BackendComparison,
     AlgorithmComparison,
-    MaterialComparison,
+    BackendComparison,
     CostBenefitAnalyzer,
+    MaterialComparison,
+)
+from .performance import (
+    ClassicalBenchmark,
+    PerformanceBenchmark,
+    QuantumBenchmark,
+    ScalingAnalyzer,
+    SpeedupAnalyzer,
 )
 
 __all__ = [
